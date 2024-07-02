@@ -444,3 +444,16 @@ func FilterDeviceToRegister(uuid, indexStr string) bool {
 	}
 	return false
 }
+
+// resource name format: company/device-type,like: nvidia.com/gpu-h100
+func GetGpuTypeFromResourceName(ResName string) string {
+	temp1 := strings.Split(ResName, "/")
+	if len(temp1) != 2 {
+		return ""
+	}
+	temp2 := strings.Split(temp1[1], "-")
+	if len(temp2) != 2 {
+		return ""
+	}
+	return temp2[1]
+}
