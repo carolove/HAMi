@@ -1,3 +1,4 @@
+{{- if .Values.scheduler.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -164,3 +165,4 @@ spec:
       {{- if .Values.scheduler.nodeName }}
       nodeName: {{ .Values.scheduler.nodeName }}
       {{- end }}
+{{- end }}
