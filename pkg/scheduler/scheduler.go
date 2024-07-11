@@ -443,7 +443,7 @@ ReleaseNodeLocks:
 
 func (s *Scheduler) Filter(args extenderv1.ExtenderArgs) (*extenderv1.ExtenderFilterResult, error) {
 	klog.InfoS("begin schedule filter", "pod", args.Pod.Name, "uuid", args.Pod.UID, "namespaces", args.Pod.Namespace)
-	nums := k8sutil.Resourcereqs(args.Pod)
+	gpuType, nums := k8sutil.Resourcereqs(args.Pod)
 	total := 0
 	for _, n := range nums {
 		for _, k := range n {
@@ -480,6 +480,7 @@ func (s *Scheduler) Filter(args extenderv1.ExtenderArgs) (*extenderv1.ExtenderFi
 		s.recordScheduleFilterResultEvent(args.Pod, EventReasonFilteringFailed, []string{}, fmt.Errorf("no available node, all node scores do not meet"))
 		return &extenderv1.ExtenderFilterResult{
 			FailedNodes: failedNodes,
+			Error:       fmt.Sprintf("Insufficient %s", gpuType),
 		}, nil
 	}
 	klog.V(4).Infoln("nodeScores_len=", len((*nodeScores).NodeList))
