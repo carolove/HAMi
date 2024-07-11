@@ -184,6 +184,7 @@ func (dev *NvidiaGPUDevices) MutateAdmission(ctr *corev1.Container, p *corev1.Po
 	// 	}
 	// }
 
+	// 这段代码主要是为了解决当nvidia.com/gpu-<type> 是 0，设置container内GPU全部不可见 MatrixDC - 2024 July - Sprint 3 task 84
 	if !resourceNameOK && OverwriteEnv {
 		ctr.Env = append(ctr.Env, corev1.EnvVar{
 			Name:  "NVIDIA_VISIBLE_DEVICES",
