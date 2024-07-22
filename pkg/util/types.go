@@ -86,6 +86,7 @@ var (
 	// DevicePluginFilterDevice need device-plugin filter this device, don't register this device.
 	DevicePluginFilterDevice *FilterDevice
 	CustomModelName          *string
+	LibcudaLogLevel          *uint // set libvgpu LIBCUDA_LOG_LEVEL
 )
 
 //	type ContainerDevices struct {
