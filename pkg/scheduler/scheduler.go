@@ -481,7 +481,7 @@ func (s *Scheduler) Filter(args extenderv1.ExtenderArgs) (*extenderv1.ExtenderFi
 		s.recordScheduleFilterResultEvent(args.Pod, EventReasonFilteringFailed, []string{}, fmt.Errorf("no available node, all node scores do not meet"))
 		return &extenderv1.ExtenderFilterResult{
 			FailedNodes: failedNodes,
-			Error:       fmt.Sprintf("0/%v nodes are available: %d nodes Insufficient %s.", len(*args.NodeNames), len(*args.NodeNames), gpuType),
+			Error:       fmt.Sprintf(" nodes: %v, %d nodes Insufficient %s.", *args.NodeNames, len(*args.NodeNames), gpuType),
 		}, nil
 	}
 	klog.V(4).Infoln("nodeScores_len=", len((*nodeScores).NodeList))
