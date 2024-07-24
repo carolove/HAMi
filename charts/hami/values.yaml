@@ -86,6 +86,7 @@ scheduler:
   #  nvidia-device: "h20"
   tolerations: []
   #serviceAccountName: "hami-vgpu-scheduler-sa"
+  webhookPrefix: zzz- # in order to put webhook at the end
   admissionWebhook:
     customURL:
       enabled: false
