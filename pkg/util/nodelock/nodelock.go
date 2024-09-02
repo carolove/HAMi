@@ -35,6 +35,10 @@ const (
 	NodeLockSep  = ","
 )
 
+var (
+	NodeLockEnbaled bool
+)
+
 func SetNodeLock(nodeName string, lockname string, pods *corev1.Pod) error {
 	ctx := context.Background()
 	node, err := client.GetClient().CoreV1().Nodes().Get(ctx, nodeName, metav1.GetOptions{})
@@ -67,6 +71,10 @@ func SetNodeLock(nodeName string, lockname string, pods *corev1.Pod) error {
 }
 
 func ReleaseNodeLock(nodeName string, lockname string) error {
+	if !NodeLockEnbaled {
+		klog.InfoS("nodeLock is diabled", "method", "ReleaseNodeLock", "nodeName", nodeName, "lockname", lockname)
+		return nil
+	}
 	ctx := context.Background()
 	node, err := client.GetClient().CoreV1().Nodes().Get(ctx, nodeName, metav1.GetOptions{})
 	if err != nil {
@@ -99,6 +107,11 @@ func ReleaseNodeLock(nodeName string, lockname string) error {
 }
 
 func LockNode(nodeName string, lockname string, pods *corev1.Pod) error {
+	if !NodeLockEnbaled {
+		klog.InfoS("nodeLock is diabled", "method", "LockNode", "nodeName", nodeName, "lockname", lockname)
+		return nil
+	}
+
 	ctx := context.Background()
 	node, err := client.GetClient().CoreV1().Nodes().Get(ctx, nodeName, metav1.GetOptions{})
 	if err != nil {

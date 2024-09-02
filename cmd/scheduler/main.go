@@ -25,6 +25,7 @@ import (
 	"github.com/Project-HAMi/HAMi/pkg/scheduler/policy"
 	"github.com/Project-HAMi/HAMi/pkg/scheduler/routes"
 	"github.com/Project-HAMi/HAMi/pkg/util"
+	"github.com/Project-HAMi/HAMi/pkg/util/nodelock"
 	"github.com/Project-HAMi/HAMi/pkg/version"
 
 	"github.com/julienschmidt/httprouter"
@@ -62,6 +63,7 @@ func init() {
 	rootCmd.Flags().StringVar(&config.GPUSchedulerPolicy, "gpu-scheduler-policy", policy.GPUSchedulerPolicySpread.String(), "GPU scheduler policy")
 	rootCmd.Flags().StringVar(&config.MetricsBindAddress, "metrics-bind-address", ":9395", "The TCP address that the scheduler should bind to for serving prometheus metrics(e.g. 127.0.0.1:9395, :9395)")
 	rootCmd.Flags().StringToStringVar(&config.NodeLabelSelector, "node-label-selector", nil, "key=value pairs separated by commas")
+	rootCmd.Flags().BoolVar(&config.NodeLockEnbaled, "node-lock-enabled", false, "enable nodeLock or not")
 	rootCmd.PersistentFlags().AddGoFlagSet(device.GlobalFlagSet())
 	rootCmd.AddCommand(version.VersionCmd)
 	rootCmd.Flags().AddGoFlagSet(util.InitKlogFlags())
@@ -77,6 +79,8 @@ func start() {
 	go sher.RegisterFromNodeAnnotations()
 	go initMetrics(config.MetricsBindAddress)
 
+	// set nodeLock state
+	nodelock.NodeLockEnbaled = config.NodeLockEnbaled
 	// start http server
 	router := httprouter.New()
 	router.POST("/filter", routes.PredicateRoute(sher))
