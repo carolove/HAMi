@@ -16,6 +16,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update; apt-get -y install cmake
 RUN bash ./build.sh
 
+# 镜像在咱们的仓库中有 切记从docker hub拉去的时候要加入--platform=linux/amd64
 FROM nvidia/cuda:12.4.1-base-ubuntu22.04
 ENV NVIDIA_DISABLE_REQUIRE="true"
 ENV NVIDIA_VISIBLE_DEVICES=all
