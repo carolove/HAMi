@@ -1,8 +1,12 @@
+{{- if .Values.scheduler.enabled }}
+{{- if .Values.scheduler.kubeScheduler.enabled }}
+
 {{- if .Values.devices.ascend.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "hami-vgpu.scheduler" . }}-device
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     app.kubernetes.io/component: hami-scheduler
     {{- include "hami-vgpu.labels" . | nindent 4 }}
@@ -72,4 +76,7 @@ data:
           aiCPU: 4
   {{ end }}
 
+{{- end }}
+
+{{- end }}
 {{- end }}
