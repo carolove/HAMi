@@ -10,4 +10,4 @@
 
 ## 重建
 - touch .gitmodules
-- git submodule add -b release-2.3.12 https://github.com/carolove/HAMi-core.git libvgpu
+- git submodule add -b release-2.3.12-with-main https://github.com/carolove/HAMi-core.git libvgpu

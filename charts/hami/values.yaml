@@ -3,10 +3,10 @@
 nameOverride: ""
 fullnameOverride: ""
 imagePullSecrets: [ ]
-version: "v2.4.0"
+version: "v2.3.12-20241021-77c4d60"
 
 #Nvidia GPU Parameters
-resourceName: "nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090"
+resourceName: "nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090;nvidia.com/gpu-3090"
 resourceMem: "nvidia.com/gpumem"
 resourceMemPercentage: "nvidia.com/gpumem-percentage"
 resourceCores: "nvidia.com/gpucores"
@@ -118,6 +118,7 @@ scheduler:
     labels: {}
     annotations: {}
 
+# 这个仅仅是指nvidia的设备插件，其他设备插件的配置在devices中
 devicePlugin:
   enabled: true
   image: "projecthami/hami"
@@ -153,7 +154,7 @@ devices:
     resources:
       - mthreads.com/vgpu
   ascend:
-    enabled: false
+    enabled: true
     image: ""
     imagePullPolicy: IfNotPresent
     extraArgs: []

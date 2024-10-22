@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: hami-scheduler-scheduler
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   labels:
     app.kubernetes.io/component: "hami-scheduler"
     helm.sh/chart: hami-2.0.0
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hami-scheduler-scheduler
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   labels:
     app.kubernetes.io/component: hami-scheduler
     helm.sh/chart: hami-2.0.0
@@ -45,6 +45,30 @@ data:
                 },
                 "managedResources": [
                     {
+                      "name": "huawei.com/Ascend910A",
+                      "ignoredByScheduler": true
+                    },
+                    {
+                      "name": "huawei.com/Ascend910A-memory",
+                      "ignoredByScheduler": true
+                    },
+                    {
+                      "name": "huawei.com/Ascend910B",
+                      "ignoredByScheduler": true
+                    },
+                    {
+                      "name": "huawei.com/Ascend910B-memory",
+                      "ignoredByScheduler": true
+                    },
+                    {
+                      "name": "huawei.com/Ascend310P",
+                      "ignoredByScheduler": true
+                    },
+                    {
+                      "name": "huawei.com/Ascend310P-memory",
+                      "ignoredByScheduler": true
+                    },
+                    {
                         "name": "nvidia.com/gpu-h100",
                         "ignoredByScheduler": true
                     },
@@ -54,6 +78,10 @@ data:
                     },
                     {
                         "name": "nvidia.com/gpu-4090",
+                        "ignoredByScheduler": true
+                    },
+                    {
+                        "name": "nvidia.com/gpu-3090",
                         "ignoredByScheduler": true
                     },
                     {
@@ -91,14 +119,6 @@ data:
                     {
                         "name": "iluvatar.ai/vgpu",
                         "ignoredByScheduler": true
-                    },
-                    {
-                        "name": "huawei.com/Ascend910-memory",
-                        "ignoredByScheduler": true
-                    },
-                    {
-                        "name": "huawei.com/Ascend910",
-                        "ignoredByScheduler": true
                     }
                 ],
                 "ignoreable": false
@@ -111,7 +131,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hami-scheduler-scheduler-newversion
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   labels:
     app.kubernetes.io/component: hami-scheduler
     helm.sh/chart: hami-2.0.0
@@ -145,6 +165,8 @@ data:
         ignoredByScheduler: true
       - name: nvidia.com/gpu-4090
         ignoredByScheduler: true
+      - name: nvidia.com/gpu-3090
+        ignoredByScheduler: true
       - name: nvidia.com/gpumem
         ignoredByScheduler: true
       - name: nvidia.com/gpucores
@@ -163,10 +185,92 @@ data:
         ignoredByScheduler: true
       - name: iluvatar.ai/vgpu
         ignoredByScheduler: true
-      - name: huawei.com/Ascend910-memory
+      - name: huawei.com/Ascend910A
         ignoredByScheduler: true
-      - name: huawei.com/Ascend910
+      - name: huawei.com/Ascend910A-memory
         ignoredByScheduler: true
+      - name: huawei.com/Ascend910B
+        ignoredByScheduler: true
+      - name: huawei.com/Ascend910B-memory
+        ignoredByScheduler: true
+      - name: huawei.com/Ascend310P
+        ignoredByScheduler: true
+      - name: huawei.com/Ascend310P-memory
+        ignoredByScheduler: true
+---
+# Source: hami/templates/scheduler/device-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hami-scheduler-scheduler-device
+  labels:
+    app.kubernetes.io/component: hami-scheduler
+    helm.sh/chart: hami-2.0.0
+    app.kubernetes.io/name: hami
+    app.kubernetes.io/instance: hami-scheduler
+    app.kubernetes.io/version: "0.0.2"
+    app.kubernetes.io/managed-by: Helm
+data:
+  ascend-config.yaml: |-
+    vnpus:
+    - chipName: 910B
+      commonWord: Ascend910A
+      resourceName: huawei.com/Ascend910A
+      resourceMemoryName: huawei.com/Ascend910A-memory
+      memoryAllocatable: 32768
+      memoryCapacity: 32768
+      aiCore: 30
+      templates:
+        - name: vir02
+          memory: 2184
+          aiCore: 2
+        - name: vir04
+          memory: 4369
+          aiCore: 4
+        - name: vir08
+          memory: 8738
+          aiCore: 8
+        - name: vir16
+          memory: 17476
+          aiCore: 16
+    - chipName: 910B3
+      commonWord: Ascend910B
+      resourceName: huawei.com/Ascend910B
+      resourceMemoryName: huawei.com/Ascend910B-memory
+      memoryAllocatable: 65536
+      memoryCapacity: 65536
+      aiCore: 20
+      aiCPU: 7
+      templates:
+        - name: vir05_1c_16g
+          memory: 16384
+          aiCore: 5
+          aiCPU: 1
+        - name: vir10_3c_32g
+          memory: 32768
+          aiCore: 10
+          aiCPU: 3
+    - chipName: 310P3
+      commonWord: Ascend310P
+      resourceName: huawei.com/Ascend310P
+      resourceMemoryName: huawei.com/Ascend310P-memory
+      memoryAllocatable: 21527
+      memoryCapacity: 24576
+      aiCore: 8
+      aiCPU: 7
+      templates:
+        - name: vir01
+          memory: 3072
+          aiCore: 1
+          aiCPU: 1
+        - name: vir02
+          memory: 6144
+          aiCore: 2
+          aiCPU: 2
+        - name: vir04
+          memory: 12288
+          aiCore: 4
+          aiCPU: 4
 ---
 # Source: hami/templates/scheduler/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -187,14 +291,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hami-scheduler-scheduler
-    namespace: "matrixdc-system"
+    namespace: matrixdc-system
 ---
 # Source: hami/templates/scheduler/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: hami-scheduler-scheduler
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   labels:
     app.kubernetes.io/component: hami-scheduler
     helm.sh/chart: hami-2.0.0
@@ -223,7 +327,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hami-scheduler-scheduler
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   labels:
     app.kubernetes.io/component: hami-scheduler
     helm.sh/chart: hami-2.0.0
@@ -262,7 +366,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: kube-scheduler
-          image: harbor.123.125.194.106.nip.io:10443/system_containers/kube-scheduler:v1.29.5
+          image: registry.aliyuncs.com/google_containers/kube-scheduler:v1.29.5
           imagePullPolicy: "IfNotPresent"
           command:
             - kube-scheduler
@@ -273,13 +377,14 @@ spec:
             - --leader-elect-resource-namespace=matrixdc-system
           volumeMounts:
             - name: scheduler-config
-              mountPath: /config      
+              mountPath: /config
         - name: vgpu-scheduler-extender
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/hami:v2.3.12-20240903-c278112
+          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/hami:v2.3.12-20241021-77c4d60
           imagePullPolicy: "IfNotPresent"
+          env:
           command:
             - scheduler
-            - --resource-name=nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090
+            - --resource-name=nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090;nvidia.com/gpu-3090
             - --resource-mem=nvidia.com/gpumem
             - --resource-cores=nvidia.com/gpucores
             - --resource-mem-percentage=nvidia.com/gpumem-percentage
@@ -297,11 +402,11 @@ spec:
             - --cambricon-mlu-name=cambricon.com/vmlu
             - --cambricon-mlu-memory=cambricon.com/mlu.smlu.vmemory
             - --cambricon-mlu-cores=cambricon.com/mlu.smlu.vcore
-            - --ascend-name=huawei.com/Ascend910
-            - --ascend-memory=huawei.com/Ascend910-memory
             - --overwrite-env=false
             - --node-scheduler-policy=binpack
             - --gpu-scheduler-policy=spread
+            - --ascend-config-file=/ascend-config.yaml
+            - --enable-ascend=true
             - --debug
             - -v=5
           ports:
@@ -311,6 +416,9 @@ spec:
           volumeMounts:
             - name: tls-config
               mountPath: /tls
+            - name: device-config
+              mountPath: /ascend-config.yaml
+              subPath: ascend-config.yaml
       volumes:
         - name: tls-config
           secret:
@@ -318,6 +426,9 @@ spec:
         - name: scheduler-config
           configMap:
             name: hami-scheduler-scheduler-newversion
+        - name: device-config
+          configMap:
+            name: hami-scheduler-scheduler-device
 ---
 # Source: hami/templates/scheduler/webhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -367,7 +478,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: hami-scheduler-admission
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -426,14 +537,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hami-scheduler-admission
-    namespace: "matrixdc-system"
+    namespace: matrixdc-system
 ---
 # Source: hami/templates/scheduler/job-patch/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name:  hami-scheduler-admission
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -458,7 +569,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: hami-scheduler-admission
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -476,14 +587,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hami-scheduler-admission
-    namespace: "matrixdc-system"
+    namespace: matrixdc-system
 ---
 # Source: hami/templates/scheduler/job-patch/job-createSecret.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: hami-scheduler-admission-create
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -511,8 +622,8 @@ spec:
         []
       containers:
         - name: create
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/kube-webhook-certgen:v1.1.1
-          imagePullPolicy: Always
+          image: liangjw/kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
           args:
             - create
             - --cert-name=tls.crt
@@ -531,7 +642,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: hami-scheduler-admission-patch
-  namespace: "matrixdc-system"
+  namespace: matrixdc-system
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -559,8 +670,8 @@ spec:
         []
       containers:
         - name: patch
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/kube-webhook-certgen:v1.1.1
-          imagePullPolicy: Always
+          image: liangjw/kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
           args:
             - patch
             - --webhook-name=zzz-hami-scheduler-webhook
