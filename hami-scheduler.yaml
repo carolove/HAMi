@@ -57,6 +57,14 @@ data:
                         "ignoredByScheduler": true
                     },
                     {
+                        "name": "nvidia.com/gpu-3090",
+                        "ignoredByScheduler": true
+                    },
+                    {
+                        "name": "nvidia.com/gpu-4060",
+                        "ignoredByScheduler": true
+                    },
+                    {
                         "name": "nvidia.com/gpumem",
                         "ignoredByScheduler": true
                     },
@@ -144,6 +152,10 @@ data:
       - name: nvidia.com/gpu-h20
         ignoredByScheduler: true
       - name: nvidia.com/gpu-4090
+        ignoredByScheduler: true
+      - name: nvidia.com/gpu-3090
+        ignoredByScheduler: true
+      - name: nvidia.com/gpu-4060
         ignoredByScheduler: true
       - name: nvidia.com/gpumem
         ignoredByScheduler: true
@@ -262,7 +274,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: kube-scheduler
-          image: harbor.123.125.194.106.nip.io:10443/system_containers/kube-scheduler:v1.29.5
+          image: registry.aliyuncs.com/google_containers/kube-scheduler:v1.29.5
           imagePullPolicy: "IfNotPresent"
           command:
             - kube-scheduler
@@ -275,11 +287,11 @@ spec:
             - name: scheduler-config
               mountPath: /config      
         - name: vgpu-scheduler-extender
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/hami:v2.3.12-20240903-c278112
+          image: harbor.43.143.130.168.nip.io:30443/matrixdc-system/hami:v2.3.12-20241115-1ded6cb
           imagePullPolicy: "IfNotPresent"
           command:
             - scheduler
-            - --resource-name=nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090
+            - --resource-name=nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090;nvidia.com/gpu-3090;nvidia.com/gpu-4060
             - --resource-mem=nvidia.com/gpumem
             - --resource-cores=nvidia.com/gpucores
             - --resource-mem-percentage=nvidia.com/gpumem-percentage
@@ -511,8 +523,8 @@ spec:
         []
       containers:
         - name: create
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/kube-webhook-certgen:v1.1.1
-          imagePullPolicy: Always
+          image: harbor.43.143.130.168.nip.io:30443/matrixdc-system/liangjw-kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
           args:
             - create
             - --cert-name=tls.crt
@@ -559,8 +571,8 @@ spec:
         []
       containers:
         - name: patch
-          image: harbor.123.125.194.106.nip.io:10443/matrixdc-system/kube-webhook-certgen:v1.1.1
-          imagePullPolicy: Always
+          image: harbor.43.143.130.168.nip.io:30443/matrixdc-system/liangjw-kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
           args:
             - patch
             - --webhook-name=zzz-hami-scheduler-webhook

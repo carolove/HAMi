@@ -6,7 +6,7 @@ imagePullSecrets: [ ]
 version: "v2.3.12"
 
 #Nvidia GPU Parameters
-resourceName: "nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090"
+resourceName: "nvidia.com/gpu-h100;nvidia.com/gpu-h20;nvidia.com/gpu-4090;nvidia.com/gpu-3090;nvidia.com/gpu-4060"
 resourceMem: "nvidia.com/gpumem"
 resourceMemPercentage: "nvidia.com/gpumem-percentage"
 resourceCores: "nvidia.com/gpucores"
@@ -123,7 +123,7 @@ devicePlugin:
   disablecorelimit: "false"
   extraArgs:
     - -v=false
-    - --custom-device-type=H100 # need edit when apply device-plugin
+    - --custom-device-type=4060 # need edit when apply device-plugin
     - --libcuda-log-level=0 # libcuda log level, 0,1 err; 2 msg/warn;3 info; 4 debug;
   
   service:
@@ -135,6 +135,6 @@ devicePlugin:
   podAnnotations: {}
   nvidianodeSelector:
     gpu: "on"
-    nvidia-device: "h100" # need edit when apply device-plugin
+    nvidia.com/gpu-type: "4060" # need edit when apply device-plugin
   tolerations: []
 
